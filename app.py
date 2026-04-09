@@ -42,15 +42,26 @@ def submit():
 
     conn = sqlite3.connect('database.db')
     cur = conn.cursor()
+
+    # ✅ Ensure table exists (IMPORTANT FOR DEPLOYMENT)
+    cur.execute('''
+        CREATE TABLE IF NOT EXISTS contacts (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            name TEXT,
+            email TEXT,
+            message TEXT
+        )
+    ''')
+
     cur.execute(
         "INSERT INTO contacts (name, email, message) VALUES (?, ?, ?)",
         (name, email, message)
     )
+
     conn.commit()
     conn.close()
 
     return redirect('/contact?success=1')
-
 # LOGIN
 @app.route('/login', methods=['GET', 'POST'])
 def login():
